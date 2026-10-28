@@ -1,0 +1,383 @@
+{
+ "gpt-6.1-sol": {
+  "2.1_position": {
+   "pairs": 160,
+   "baseline_chosen_text_changes_on_identical_repeat": [
+    13,
+    320
+   ],
+   "chosen_text_changes_when_order_swapped": [
+    63,
+    320
+   ],
+   "flips_first_text_won_both_times": 53,
+   "flips_second_text_won_both_times": 10,
+   "pairs_mostly_first_text": 32,
+   "pairs_mostly_second_text": 5,
+   "sign_test_p_over_pairs": 0.0
+  },
+  "2.2_expert_opinion": {
+   "baseline_mean_no_opinion": 4.992,
+   "baseline_mean_range_of_3_repeats": 0.3,
+   "consensus_authentic": {
+    "mean_shift": 3.971,
+    "perm_p": 0.0
+   },
+   "consensus_forgery": {
+    "mean_shift": -3.917,
+    "perm_p": 0.0
+   }
+  },
+  "2.3_authority_individual": {
+   "pairs": 25,
+   "baseline_first_shown_chosen": [
+    149,
+    300
+   ],
+   "professor_chosen": [
+    116,
+    200
+   ],
+   "baseline_pairs_same_choice_every_time_without_authors": 20,
+   "pairs_toward_professor": 10,
+   "pairs_away": 1,
+   "perm_p": 0.0078
+  },
+  "2.4_prior_score": {
+   "C1": {
+    "mean": 3.595,
+    "accepted": 0.55
+   },
+   "C2": {
+    "mean": 3.466,
+    "accepted": 0.43
+   },
+   "baseline_C1_mean_sd_of_10_repeats": 0.06,
+   "C2_minus_C1": {
+    "mean": -0.129,
+    "texts_lower": 18,
+    "texts": 20,
+    "perm_p": 0.0047
+   }
+  },
+  "2.5_unanimity": {
+   "baseline_plain_repeat": {
+    "n": 150,
+    "changed": 7,
+    "rate": 0.0467
+   },
+   "with_sentence": {
+    "n": 150,
+    "changed": 32,
+    "rate": 0.2133
+   },
+   "fisher_p": 2.1828004347580582e-05
+  },
+  "2.6_framing": {
+   "baseline_sd_of_50_repeats": {
+    "without_error": 0.57,
+    "contain_errors": 0.46
+   },
+   "mean_75_without_error": 4.58,
+   "mean_25_contain_errors": 3.3,
+   "difference": 1.28,
+   "perm_p": 0.0
+  },
+  "2.7_opposite_wording": {
+   "baseline_questions_whose_3_repeats_disagree": [
+    15,
+    400
+   ],
+   "pairs": 600,
+   "same_answer_to_both": 44,
+   "rate": 0.073,
+   "no_to_both": 42,
+   "yes_to_both": 2,
+   "sign_test_p": 1.1266365618212149e-10
+  },
+  "3_rating_vs_comparison": {
+   "baseline_answers_whose_2_ratings_differ": [
+    12,
+    150
+   ],
+   "answer_pairs": 300,
+   "rated_higher_alone_lost_both_orders": 3,
+   "conflict_ratio": 0.21,
+   "conflicts_by_kind": {
+    "rated differently, verdict changes with the order": 7,
+    "rated equal alone, one preferred in both orders": 44,
+    "rated differently, called a tie in both orders": 9,
+    "rated higher alone, loses in both orders": 3
+   },
+   "non_transitivity_ratio_k4": 0.1,
+   "non_transitivity_ratio_k5": 0.167,
+   "sets_of_three": 300,
+   "circular": 0,
+   "tie_related": 11
+  },
+  "3_rating_vs_comparison_default_effort": {
+   "baseline_answers_whose_2_ratings_differ": [
+    22,
+    150
+   ],
+   "answer_pairs": 300,
+   "rated_higher_alone_lost_both_orders": 3,
+   "conflict_ratio": 0.197,
+   "conflicts_by_kind": {
+    "rated equal alone, one preferred in both orders": 42,
+    "rated differently, called a tie in both orders": 7,
+    "rated differently, verdict changes with the order": 7,
+    "rated higher alone, loses in both orders": 3
+   },
+   "non_transitivity_ratio_k4": 0.093,
+   "non_transitivity_ratio_k5": 0.167,
+   "sets_of_three": 300,
+   "circular": 0,
+   "tie_related": 10
+  },
+  "3.3_negation": {
+   "pairs": 200,
+   "same_summary_better_and_worse": [
+    72,
+    800
+   ],
+   "in_slot_A": 35,
+   "in_slot_B": 37,
+   "contradiction_in_both_runs": [
+    28,
+    44
+   ],
+   "pairs_with_at_least_one": 33,
+   "baseline_choice_changes_on_identical_repeat": [
+    20,
+    800
+   ],
+   "fisher_p": 0.0
+  },
+  "3.4_reversal": {
+   "pairs": 1513,
+   "forward_right": 1074,
+   "reverse_among_forward_right": {
+    "i_dont_know": 415,
+    "names_this_child": 593,
+    "names_a_listed_sibling": 13,
+    "names_someone_else": 53
+   },
+   "reverse_right_but_forward_i_dont_know": 6,
+   "baseline_reverse_kind_changed_on_repeat": [
+    11,
+    300
+   ]
+  },
+  "3.5_self_explanation": {
+   "reviews": 200,
+   "classified_correctly": 194,
+   "baseline_label_changes_on_identical_repeat": [
+    0,
+    200
+   ],
+   "importance": {
+    "faithful": 10,
+    "still_original_label": 181,
+    "other_or_missing": 3,
+    "of": 194
+   },
+   "redaction": {
+    "faithful": 13,
+    "still_original_label": 178,
+    "other_or_missing": 3,
+    "of": 194
+   }
+  }
+ },
+ "gpt-6-luna": {
+  "2.1_position": {
+   "pairs": 160,
+   "baseline_chosen_text_changes_on_identical_repeat": [
+    37,
+    319
+   ],
+   "chosen_text_changes_when_order_swapped": [
+    94,
+    319
+   ],
+   "flips_first_text_won_both_times": 63,
+   "flips_second_text_won_both_times": 31,
+   "pairs_mostly_first_text": 43,
+   "pairs_mostly_second_text": 21,
+   "sign_test_p_over_pairs": 0.0081
+  },
+  "2.2_expert_opinion": {
+   "baseline_mean_no_opinion": 4.208,
+   "baseline_mean_range_of_3_repeats": 0.75,
+   "consensus_authentic": {
+    "mean_shift": 3.979,
+    "perm_p": 0.0
+   },
+   "consensus_forgery": {
+    "mean_shift": -3.208,
+    "perm_p": 0.0
+   }
+  },
+  "2.3_authority_individual": {
+   "pairs": 25,
+   "baseline_first_shown_chosen": [
+    135,
+    300
+   ],
+   "professor_chosen": [
+    182,
+    200
+   ],
+   "baseline_pairs_same_choice_every_time_without_authors": 11,
+   "pairs_toward_professor": 24,
+   "pairs_away": 0,
+   "perm_p": 0.0
+  },
+  "2.4_prior_score": {
+   "C1": {
+    "mean": 3.619,
+    "accepted": 0.645
+   },
+   "C2": {
+    "mean": 3.487,
+    "accepted": 0.575
+   },
+   "baseline_C1_mean_sd_of_10_repeats": 0.17,
+   "C2_minus_C1": {
+    "mean": -0.132,
+    "texts_lower": 18,
+    "texts": 20,
+    "perm_p": 0.0006
+   }
+  },
+  "2.5_unanimity": {
+   "baseline_plain_repeat": {
+    "n": 150,
+    "changed": 18,
+    "rate": 0.12
+   },
+   "with_sentence": {
+    "n": 150,
+    "changed": 41,
+    "rate": 0.2733
+   },
+   "fisher_p": 0.001263235719225859
+  },
+  "2.6_framing": {
+   "baseline_sd_of_50_repeats": {
+    "without_error": 0.46,
+    "contain_errors": 0.71
+   },
+   "mean_75_without_error": 4.16,
+   "mean_25_contain_errors": 3.82,
+   "difference": 0.34,
+   "perm_p": 0.0093
+  },
+  "2.7_opposite_wording": {
+   "baseline_questions_whose_3_repeats_disagree": [
+    39,
+    400
+   ],
+   "pairs": 600,
+   "same_answer_to_both": 50,
+   "rate": 0.083,
+   "no_to_both": 39,
+   "yes_to_both": 11,
+   "sign_test_p": 9.021490107130603e-05
+  },
+  "3_rating_vs_comparison": {
+   "baseline_answers_whose_2_ratings_differ": [
+    52,
+    150
+   ],
+   "answer_pairs": 300,
+   "rated_higher_alone_lost_both_orders": 14,
+   "conflict_ratio": 0.26,
+   "conflicts_by_kind": {
+    "rated equal alone, one preferred in both orders": 33,
+    "rated differently, verdict changes with the order": 31,
+    "rated higher alone, loses in both orders": 14
+   },
+   "non_transitivity_ratio_k4": 0.16,
+   "non_transitivity_ratio_k5": 0.233,
+   "sets_of_three": 300,
+   "circular": 8,
+   "tie_related": 16
+  },
+  "3_rating_vs_comparison_default_effort": {
+   "baseline_answers_whose_2_ratings_differ": [
+    47,
+    150
+   ],
+   "answer_pairs": 300,
+   "rated_higher_alone_lost_both_orders": 18,
+   "conflict_ratio": 0.273,
+   "conflicts_by_kind": {
+    "rated differently, verdict changes with the order": 19,
+    "rated equal alone, one preferred in both orders": 40,
+    "rated higher alone, loses in both orders": 18,
+    "rated differently, called a tie in both orders": 5
+   },
+   "non_transitivity_ratio_k4": 0.133,
+   "non_transitivity_ratio_k5": 0.233,
+   "sets_of_three": 300,
+   "circular": 4,
+   "tie_related": 12
+  },
+  "3.3_negation": {
+   "pairs": 200,
+   "same_summary_better_and_worse": [
+    127,
+    800
+   ],
+   "in_slot_A": 83,
+   "in_slot_B": 44,
+   "contradiction_in_both_runs": [
+    17,
+    110
+   ],
+   "pairs_with_at_least_one": 82,
+   "baseline_choice_changes_on_identical_repeat": [
+    113,
+    800
+   ],
+   "fisher_p": 0.3627
+  },
+  "3.4_reversal": {
+   "pairs": 1513,
+   "forward_right": 1017,
+   "reverse_among_forward_right": {
+    "i_dont_know": 474,
+    "names_this_child": 374,
+    "names_someone_else": 158,
+    "names_a_listed_sibling": 11
+   },
+   "reverse_right_but_forward_i_dont_know": 5,
+   "baseline_reverse_kind_changed_on_repeat": [
+    57,
+    300
+   ]
+  },
+  "3.5_self_explanation": {
+   "reviews": 200,
+   "classified_correctly": 192,
+   "baseline_label_changes_on_identical_repeat": [
+    4,
+    200
+   ],
+   "importance": {
+    "faithful": 1,
+    "still_original_label": 182,
+    "other_or_missing": 9,
+    "of": 192
+   },
+   "redaction": {
+    "faithful": 2,
+    "still_original_label": 187,
+    "other_or_missing": 3,
+    "of": 192
+   }
+  }
+ }
+}
