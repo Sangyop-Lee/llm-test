@@ -191,50 +191,46 @@ Example (Sol, all three repeats):
 
 ## 3. Self-inconsistency
 
-Here the model contradicts itself. One contradiction is a failure in itself, so these results are counts rather than tests against chance. The baseline shows how often the model's answer to the identical question changes on repeat.
+Here the model contradicts itself. Each test compares the contradictions with a baseline: how often the model's judgment changes when the identical question is asked again.
 
 ### 3.1 Rated higher, then preferred the other
 
-**What the models saw:** 30 questions from MT-Bench (Zheng et al., NeurIPS 2023), each with the answers of five chatbots. Each answer was rated alone on a 1–10 scale, twice. Every pair of answers was also compared directly in both orders. This is the design of TrustJudge (Wang et al., ICLR 2026).
+**What the models saw:** all 80 questions of MT-Bench (Zheng et al., NeurIPS 2023), each with the answers of five chatbots. Each answer was rated alone on a 1–10 scale, twice. Every pair of answers was also compared directly, in both orders, in two rounds. Every prompt was a separate request, so the model never saw its other judgments. This is the design of TrustJudge (Wang et al., ICLR 2026), with a second round of comparisons added as the baseline.
 
-**The contradiction:** an answer gets the higher rating on its own, yet loses the direct comparison in both orders.
+**The contradiction:** an answer gets the higher rating on its own, yet loses the direct comparison in both orders. Following TrustJudge, an answer wins a pair only if it wins in both orders; otherwise the pair counts as a tie.
 
-| | Sol | Luna |
+**Statistics:** Fisher's exact test. It compares the number of contradictions with the number of reversals when a judgment of the same kind is repeated, and gives the probability of a difference this large if the two were really equally common.
+
+| 800 pairs of answers | Sol | Luna |
 |---|---|---|
-| Baseline: an answer's rating changes when the same prompt is asked again | 12 of 150 | 52 of 150 |
-| Rated higher alone, lost head-to-head in both orders | **3 of 300 pairs** | **14 of 300** |
-| Conflict Ratio (TrustJudge): ratings and head-to-head verdict disagree in any way | 21% | 26% |
+| Baseline: the two ratings order the pair oppositely | 0 | 14 |
+| Baseline: the two rounds of comparison pick opposite winners | 0 | 7 |
+| **Rated higher alone, lost head-to-head in both orders** (round 1 / round 2) | **7 / 8** | **30 / 33** |
+| … in both rounds | 6 | 21 |
+| Round 1 against either baseline | p = 0.02 / 0.02 | p = 0.02 / 0.0002 |
+| Conflict Ratio (TrustJudge): ratings and head-to-head verdict disagree in any way (round 1) | 18% | 22% |
 
-Most of the Conflict Ratio comes from answers that got the same rating alone and were then separated head-to-head (Sol 44 of its 63 conflicts, Luna 33 of 78). A 1–10 scale invites this, so the outright contradictions above are the clearer evidence.
+Sol never reversed itself when the same kind of judgment was repeated, yet in 7 pairs its ratings and its comparisons disagree, and in 6 of them they disagree again in the second round. Luna does the same four times as often. Most of the Conflict Ratio comes from answers that got the same rating alone and were then separated head-to-head (Sol 103 of 144 conflicts, Luna 83 of 176); a 1–10 scale invites this, so the outright contradictions are the clearer evidence.
 
-Example (Sol): asked "Which word does not belong with the others? tyre, steering wheel, car, engine", Sol rated one answer 2 and 2 and another 1 and 1. Compared directly, it preferred the answer it had rated 1, in both orders.
+Example (Sol): asked "Which word does not belong with the others? tyre, steering wheel, car, engine", Sol rated one answer 2 and 2 and another 1 and 1. Compared directly, it preferred the answer it had rated 1, in both orders and in both rounds.
 
 ### 3.2 Transitivity violations
 
-From the same comparisons, two kinds of violation defined by TrustJudge, in a set of three answers:
+**The contradiction:** from the same comparisons, two kinds of violation defined by TrustJudge, in a set of three answers:
 - **Circular:** the model rates A above B and B above C, yet does not rate A above C.
 - **Tie-related:** the model rates A equal to B and B equal to C, yet does not rate A equal to C.
 
-Following TrustJudge, an answer wins a pair only if it wins in both orders; otherwise the pair counts as a tie.
+**Statistics:** Fisher's exact test. If violations were chance, a set of three with a violation in round 1 would have one in round 2 no more often than the other sets do.
 
-| | Sol | Luna |
+| 800 sets of three answers | Sol | Luna |
 |---|---|---|
-| Sets of three answers with a circular violation | 0 of 300 | **8 of 300** |
-| Sets of three answers with a tie-related violation | 11 of 300 | 16 of 300 |
-| Non-Transitivity Ratio (TrustJudge): sets of 4 / 5 answers containing any violation | 10% / 17% | 16% / 23% |
+| **Circular violation** (round 1 / round 2) | **3 / 5** | **15 / 9** |
+| … in both rounds | 3 (p < 0.0001) | 2 (p = 0.01) |
+| **Tie-related violation** (round 1 / round 2) | **21 / 16** | **27 / 30** |
+| … in both rounds | 14 (p < 0.0001) | 7 (p < 0.0001) |
+| Non-Transitivity Ratio (TrustJudge): sets of 4 / 5 answers containing any violation (round 1) | 8% / 14% | 13% / 21% |
 
-All of Sol's violations are of the tie-related kind.
-
-**At default reasoning effort.** 3.1 and 3.2 use `reasoning_effort: "low"`. The same calls, repeated at each model's default effort, gave nearly the same results:
-
-| | Sol | Luna |
-|---|---|---|
-| Baseline: an answer's rating changes on a repeat | 22 of 150 | 47 of 150 |
-| Rated higher alone, lost head-to-head in both orders | **3 of 300** | **18 of 300** |
-| Conflict Ratio | 20% | 27% |
-| Sets of three answers with a circular violation | 0 of 300 | **4 of 300** |
-| Sets of three answers with a tie-related violation | 10 of 300 | 12 of 300 |
-| Non-Transitivity Ratio, sets of 4 / 5 | 9% / 17% | 13% / 23% |
+Both models violate transitivity, and the violations recur when the comparisons are asked again: all three of Sol's circular violations, and two-thirds of its tie-related ones. Luna violates more often but less stably.
 
 ### 3.3 Chose the same text as better and as worse
 
@@ -302,7 +298,7 @@ Both models said the sentiment could not be determined without these words; with
 
 ## Method
 
-- **Models and settings:** `gpt-6.1-sol` and `gpt-6-luna` through the OpenAI Chat Completions API, 25–28 October 2026, with identical prompts for both. Sections 1 and 2.1 ran at each model's default reasoning effort; every other test at `reasoning_effort: "low"`, the lowest setting both models accept; 3.1–3.2 were also repeated at the default effort. Temperature cannot be set on these models. The model IDs are aliases with no dated snapshot, so the same calls made later may reach an updated model.
+- **Models and settings:** `gpt-6.1-sol` and `gpt-6-luna` through the OpenAI Chat Completions API, 25–29 October 2026, with identical prompts for both. Sections 1 and 2.1 ran at each model's default reasoning effort; every other test at `reasoning_effort: "low"`, the lowest setting both models accept. Temperature cannot be set on these models. The model IDs are aliases with no dated snapshot, so the same calls made later may reach an updated model.
 - **Statistics:** a p-value is the probability of a difference at least as large as the one observed if the change had no effect. No direction was assumed in advance (two-sided tests). Each section names its test and says what it compares.
 - **Prompts:** the scripts rebuild every prompt exactly. Each recorded call holds a hash of its prompt, and the rebuilt prompts reproduce every hash.
 - **Section 1 details:** the prompts were built with the NoLiMa authors' code and data (github.com/adobe-research/NoLiMa), with the sentence at 50% depth. The surrounding text is the authors' shuffled novels; one book holds about 290,000 tokens, so 500K joins books 1–2 and 750K–900K join books 1–4. The answer token limit was raised from 192 to 16,000, because reasoning tokens count against it. An answer is correct if it contains "Katie"; every reply was also read.

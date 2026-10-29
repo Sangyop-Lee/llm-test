@@ -96,44 +96,53 @@
    "sign_test_p": 1.1266365618212149e-10
   },
   "3_rating_vs_comparison": {
-   "baseline_answers_whose_2_ratings_differ": [
-    12,
-    150
+   "questions": 80,
+   "answer_pairs": 800,
+   "contradiction_rounds_1_2": [
+    7,
+    8
    ],
-   "answer_pairs": 300,
-   "rated_higher_alone_lost_both_orders": 3,
-   "conflict_ratio": 0.21,
-   "conflicts_by_kind": {
-    "rated differently, verdict changes with the order": 7,
-    "rated equal alone, one preferred in both orders": 44,
-    "rated differently, called a tie in both orders": 9,
-    "rated higher alone, loses in both orders": 3
+   "contradiction_in_both_rounds": 6,
+   "baseline_rating_order_reversed_between_the_2_ratings": 0,
+   "baseline_winner_reversed_between_the_2_rounds": 0,
+   "fisher_p_vs_rating_baseline": 0.0154,
+   "fisher_p_vs_comparison_baseline": 0.0154,
+   "conflict_ratio_round_1": 0.18,
+   "conflicts_by_kind_round_1": {
+    "rated equal alone, one preferred in both orders": 103,
+    "rated differently, verdict changes with the order": 23,
+    "rated higher alone, loses in both orders": 7,
+    "rated differently, called a tie in both orders": 11
    },
-   "non_transitivity_ratio_k4": 0.1,
-   "non_transitivity_ratio_k5": 0.167,
-   "sets_of_three": 300,
-   "circular": 0,
-   "tie_related": 11
-  },
-  "3_rating_vs_comparison_default_effort": {
-   "baseline_answers_whose_2_ratings_differ": [
-    22,
-    150
+   "sets_of_three": 800,
+   "circular": {
+    "rounds_1_2": [
+     3,
+     5
+    ],
+    "in_both_rounds": 3,
+    "repeat_rate": 1.0,
+    "rate_in_round_2_among_the_rest": 0.003,
+    "fisher_p": 0.0
+   },
+   "tie_related": {
+    "rounds_1_2": [
+     21,
+     16
+    ],
+    "in_both_rounds": 14,
+    "repeat_rate": 0.667,
+    "rate_in_round_2_among_the_rest": 0.003,
+    "fisher_p": 0.0
+   },
+   "non_transitivity_ratio_k4_rounds_1_2": [
+    0.083,
+    0.077
    ],
-   "answer_pairs": 300,
-   "rated_higher_alone_lost_both_orders": 3,
-   "conflict_ratio": 0.197,
-   "conflicts_by_kind": {
-    "rated equal alone, one preferred in both orders": 42,
-    "rated differently, called a tie in both orders": 7,
-    "rated differently, verdict changes with the order": 7,
-    "rated higher alone, loses in both orders": 3
-   },
-   "non_transitivity_ratio_k4": 0.093,
-   "non_transitivity_ratio_k5": 0.167,
-   "sets_of_three": 300,
-   "circular": 0,
-   "tie_related": 10
+   "non_transitivity_ratio_k5_rounds_1_2": [
+    0.138,
+    0.138
+   ]
   },
   "3.3_negation": {
    "pairs": 200,
@@ -287,43 +296,53 @@
    "sign_test_p": 9.021490107130603e-05
   },
   "3_rating_vs_comparison": {
-   "baseline_answers_whose_2_ratings_differ": [
-    52,
-    150
+   "questions": 80,
+   "answer_pairs": 800,
+   "contradiction_rounds_1_2": [
+    30,
+    33
    ],
-   "answer_pairs": 300,
-   "rated_higher_alone_lost_both_orders": 14,
-   "conflict_ratio": 0.26,
-   "conflicts_by_kind": {
-    "rated equal alone, one preferred in both orders": 33,
-    "rated differently, verdict changes with the order": 31,
-    "rated higher alone, loses in both orders": 14
+   "contradiction_in_both_rounds": 21,
+   "baseline_rating_order_reversed_between_the_2_ratings": 14,
+   "baseline_winner_reversed_between_the_2_rounds": 7,
+   "fisher_p_vs_rating_baseline": 0.0208,
+   "fisher_p_vs_comparison_baseline": 0.0002,
+   "conflict_ratio_round_1": 0.22,
+   "conflicts_by_kind_round_1": {
+    "rated equal alone, one preferred in both orders": 83,
+    "rated higher alone, loses in both orders": 30,
+    "rated differently, verdict changes with the order": 61,
+    "rated differently, called a tie in both orders": 2
    },
-   "non_transitivity_ratio_k4": 0.16,
-   "non_transitivity_ratio_k5": 0.233,
-   "sets_of_three": 300,
-   "circular": 8,
-   "tie_related": 16
-  },
-  "3_rating_vs_comparison_default_effort": {
-   "baseline_answers_whose_2_ratings_differ": [
-    47,
-    150
+   "sets_of_three": 800,
+   "circular": {
+    "rounds_1_2": [
+     15,
+     9
+    ],
+    "in_both_rounds": 2,
+    "repeat_rate": 0.133,
+    "rate_in_round_2_among_the_rest": 0.009,
+    "fisher_p": 0.011
+   },
+   "tie_related": {
+    "rounds_1_2": [
+     27,
+     30
+    ],
+    "in_both_rounds": 7,
+    "repeat_rate": 0.259,
+    "rate_in_round_2_among_the_rest": 0.03,
+    "fisher_p": 0.0
+   },
+   "non_transitivity_ratio_k4_rounds_1_2": [
+    0.13,
+    0.13
    ],
-   "answer_pairs": 300,
-   "rated_higher_alone_lost_both_orders": 18,
-   "conflict_ratio": 0.273,
-   "conflicts_by_kind": {
-    "rated differently, verdict changes with the order": 19,
-    "rated equal alone, one preferred in both orders": 40,
-    "rated higher alone, loses in both orders": 18,
-    "rated differently, called a tie in both orders": 5
-   },
-   "non_transitivity_ratio_k4": 0.133,
-   "non_transitivity_ratio_k5": 0.233,
-   "sets_of_three": 300,
-   "circular": 4,
-   "tie_related": 12
+   "non_transitivity_ratio_k5_rounds_1_2": [
+    0.212,
+    0.225
+   ]
   },
   "3.3_negation": {
    "pairs": 200,

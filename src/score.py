@@ -23,11 +23,11 @@ asked again) next to its effect. Sections follow the README.
                         baseline: SD of the 50 ratings of each email
 2.7 opposite_wording    pairs answered the same way under "truthful" / "not truthful", split into "No" to both and "Yes"
                         to both (two-sided sign test); baseline: questions whose 3 repeats disagree
-3.  rating_vs_comparison  answers rated higher alone that lose head-to-head in both orders; TrustJudge's Conflict Ratio
-                        and Non-Transitivity Ratio (sets of 4 and 5); circular and tie-related violations among sets of
-                        three; baseline: answers whose 2 single ratings differ. An answer wins a pair only if it wins
-                        in both orders; otherwise the pair counts as a tie (TrustJudge).
-                        Also computed for the same calls at the default reasoning effort.
+3.  rating_vs_comparison  80 MT-Bench questions: answers rated higher alone that lose head-to-head in both orders, in
+                        each of 2 rounds of comparisons and in both; TrustJudge's Conflict Ratio; circular and
+                        tie-related violations among sets of three, in each round and in both; Non-Transitivity Ratio
+                        (sets of 4 and 5). Baselines: the 2 single ratings ordering a pair oppositely; the 2 rounds
+                        picking opposite winners; a set's chance of a violation in round 2 (Fisher exact tests)
 3.3 negation            the same summary chosen as having better and as having worse coherence, for the same pair in
                         the same order, against the baseline of identical prompts asked twice (Fisher exact test)
 3.5 self_explanation    the words the model names as essential for a review's sentiment (as a list, and as a
@@ -200,10 +200,14 @@ def authority_individual(model):
             "perm_p": round(perm_paired(shift), 4)}
 
 
-def rating_vs_comparison(model, tag="rating_vs_comparison"):
-    recs = load(model, tag)
-    data = {q["question_id"]: q for q in json.load(open(os.path.join(ROOT, "data", "mtbench_30.json")))["questions"]}
-    ratings, orders, replies = defaultdict(list), defaultdict(dict), defaultdict(dict)
+def rating_vs_comparison(model):
+    """TrustJudge on MT-Bench. Each answer is rated alone twice (mean of the two); every pair is compared in both orders,
+    in two rounds. In each round an answer wins a pair only if it wins in both orders, otherwise the pair is a tie
+    (TrustJudge). 3.1: rated higher alone, lost head-to-head in both orders. 3.2: transitivity violations among sets of
+    three. Baselines: how often a judgment of the same kind reverses when it is repeated."""
+    recs = load(model, "rating_vs_comparison")
+    data = {q["question_id"]: q for q in json.load(open(os.path.join(ROOT, "data", "mtbench_80.json")))["questions"]}
+    ratings, orders, replies = defaultdict(list), [defaultdict(dict), defaultdict(dict)], defaultdict(dict)
     for x in recs:
         if x["variant"] == "single":
             ratings[(x["question_id"], x["model"])].append(bracket_rating(x.get("response")))
@@ -211,16 +215,30 @@ def rating_vs_comparison(model, tag="rating_vs_comparison"):
             v = verdict(x.get("response"))
             a, b = x["slots"]["A"], x["slots"]["B"]
             key = (x["question_id"],) + tuple(sorted((a, b)))
-            orders[key][f"{a}__{b}"] = "tie" if v == "C" else x["slots"][v]
-            replies[key][f"{a}__{b}"] = x["response"]
+            orders[x["round"]][key][f"{a}__{b}"] = "tie" if v == "C" else x["slots"][v]
+            if x["round"] == 0:
+                replies[key][f"{a}__{b}"] = x["response"]
     score = {k: mean(v) for k, v in ratings.items()}
-    combined, kinds, examples = {}, Counter(), []
-    for key, d in orders.items():
-        w1, w2 = d.values()
+    pairs = sorted(orders[0])
+    combined = []
+    for r in (0, 1):
+        c = {}
+        for key in pairs:
+            w1, w2 = orders[r][key].values()
+            c[key] = key[1] if w1 == w2 == key[1] else key[2] if w1 == w2 == key[2] else "tie"
+        combined.append(c)
+
+    # 3.1, per round; TrustJudge's Conflict Ratio and its kinds for round 1
+    contradictions, kinds, examples = [set(), set()], Counter(), []
+    for key in pairs:
         q, x, y = key
-        c = x if w1 == w2 == x else y if w1 == w2 == y else "tie"
-        combined[key] = c
         sx, sy = score[(q, x)], score[(q, y)]
+        for r in (0, 1):
+            c = combined[r][key]
+            if sx != sy and c not in ("tie", x if sx > sy else y):
+                contradictions[r].add(key)
+        w1, w2 = orders[0][key].values()
+        c = combined[0][key]
         if sx == sy and c != "tie":
             kinds["rated equal alone, one preferred in both orders"] += 1
         elif sx != sy:
@@ -234,26 +252,47 @@ def rating_vs_comparison(model, tag="rating_vs_comparison"):
                 examples.append({"question_id": q, "question": data[q]["question"], "rated_higher_alone": hi,
                                  "its_ratings": ratings[(q, hi)], "preferred_in_both_orders": lo,
                                  "its_ratings_": ratings[(q, lo)], "pairwise_replies": replies[key]})
+    n = len(pairs)
+    rating_reversed = sum((ratings[(q, x)][0] - ratings[(q, y)][0]) * (ratings[(q, x)][1] - ratings[(q, y)][1]) < 0
+                          for q, x, y in pairs)
+    winner_reversed = sum("tie" not in (combined[0][k], combined[1][k]) and combined[0][k] != combined[1][k] for k in pairs)
+    first = len(contradictions[0])
+    out = {"questions": len(data), "answer_pairs": n,
+           "contradiction_rounds_1_2": [first, len(contradictions[1])],
+           "contradiction_in_both_rounds": len(contradictions[0] & contradictions[1]),
+           "baseline_rating_order_reversed_between_the_2_ratings": rating_reversed,
+           "baseline_winner_reversed_between_the_2_rounds": winner_reversed,
+           "fisher_p_vs_rating_baseline": round(fisher(first, n - first, rating_reversed, n - rating_reversed), 4),
+           "fisher_p_vs_comparison_baseline": round(fisher(first, n - first, winner_reversed, n - winner_reversed), 4),
+           "conflict_ratio_round_1": rnd(sum(kinds.values()) / n), "conflicts_by_kind_round_1": dict(kinds)}
 
-    def C(q, a, b):
-        c = combined[(q,) + tuple(sorted((a, b)))]
+    # 3.2, per round
+    def C(r, q, a, b):
+        c = combined[r][(q,) + tuple(sorted((a, b)))]
         return 1 if c == a else -1 if c == b else 0
 
-    def violation(q, t):
-        circ = any(C(q, a, b) == 1 and C(q, b, c) == 1 and C(q, c, a) != -1 for a, b, c in itertools.permutations(t))
-        tie = any(C(q, a, b) == 0 and C(q, b, c) == 0 and C(q, a, c) != 0 for a, b, c in itertools.permutations(t))
+    def violation(r, q, t):
+        circ = any(C(r, q, a, b) == 1 and C(r, q, b, c) == 1 and C(r, q, c, a) != -1 for a, b, c in itertools.permutations(t))
+        tie = any(C(r, q, a, b) == 0 and C(r, q, b, c) == 0 and C(r, q, a, c) != 0 for a, b, c in itertools.permutations(t))
         return circ, tie
-    out = {"baseline_answers_whose_2_ratings_differ": [sum(v[0] != v[1] for v in ratings.values()), len(ratings)],
-           "answer_pairs": len(combined), "rated_higher_alone_lost_both_orders": kinds["rated higher alone, loses in both orders"],
-           "conflict_ratio": rnd(sum(kinds.values()) / len(combined)), "conflicts_by_kind": dict(kinds)}
+    triples = [(q, t) for q, qd in data.items() for t in itertools.combinations(sorted(qd["answers"]), 3)]
+    found = [{k: violation(r, *k) for k in triples} for r in (0, 1)]
+    out["sets_of_three"] = len(triples)
+    for i, kind in enumerate(("circular", "tie_related")):
+        r1 = {k for k in triples if found[0][k][i]}
+        r2 = {k for k in triples if found[1][k][i]}
+        both = r1 & r2
+        # if violations were chance, a set violated in round 1 would be violated in round 2 at the rate of the rest
+        rest = len(triples) - len(r1)
+        out[kind] = {"rounds_1_2": [len(r1), len(r2)], "in_both_rounds": len(both),
+                     "repeat_rate": rnd(len(both) / len(r1)) if r1 else None,
+                     "rate_in_round_2_among_the_rest": rnd(len(r2 - r1) / rest),
+                     "fisher_p": round(fisher(len(both), len(r1) - len(both), len(r2 - r1), rest - len(r2 - r1)), 4) if r1 else None}
     for k in (4, 5):
         subsets = [(q, s) for q, qd in data.items() for s in itertools.combinations(sorted(qd["answers"]), k)]
-        bad = sum(any(any(violation(q, t)) for t in itertools.combinations(s, 3)) for q, s in subsets)
-        out[f"non_transitivity_ratio_k{k}"] = rnd(bad / len(subsets))
-    triples = [violation(q, t) for q, qd in data.items() for t in itertools.combinations(sorted(qd["answers"]), 3)]
-    out["sets_of_three"] = len(triples)
-    out["circular"] = sum(c for c, _ in triples)
-    out["tie_related"] = sum(t for _, t in triples)
+        out[f"non_transitivity_ratio_k{k}_rounds_1_2"] = [
+            rnd(sum(any(any(found[r][(q, t)]) for t in itertools.combinations(s, 3)) for q, s in subsets) / len(subsets))
+            for r in (0, 1)]
     return out, examples
 
 
@@ -368,7 +407,6 @@ if __name__ == "__main__":
         sc["2.6_framing"] = framing(model)
         sc["2.7_opposite_wording"], ex["2.7_opposite_wording"] = opposite_wording(model)
         sc["3_rating_vs_comparison"], ex["3_rating_vs_comparison"] = rating_vs_comparison(model)
-        sc["3_rating_vs_comparison_default_effort"], _ = rating_vs_comparison(model, "rating_vs_comparison_default")
         sc["3.3_negation"] = negation(model)
         sc["3.4_reversal"] = reversal(model)
         sc["3.5_self_explanation"] = self_explanation(model)

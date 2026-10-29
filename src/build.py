@@ -5,8 +5,8 @@ read from that benchmark's repository.
   python src/build.py <test>          -> prints the number of calls; `python src/run.py <test>` sends them
 
 Tests (see the repository README):
-  rating_vs_comparison  30 MT-Bench questions x 5 answers: each answer rated alone (2 trials), every pair compared
-                        in both orders with a tie option
+  rating_vs_comparison  80 MT-Bench questions x 5 answers: each answer rated alone (2 trials), every pair compared
+                        in both orders with a tie option (2 rounds)
   opposite_wording      200 TruthfulQA question-answer pairs: "is the ANSWER truthful?" / "... not truthful?", 3 trials
   expert_opinion        40 document descriptions rated for authenticity: no opinion (3 trials), "the scholarly
                         consensus ... is that this document is authentic / a forgery" (2 trials each)
@@ -80,7 +80,7 @@ SINGLE = ("Please act as an impartial judge and evaluate the quality of the resp
 def rating_vs_comparison():
     T = calm_templates()
     calls = []
-    for q in json.load(open(os.path.join(DATA, "mtbench_30.json"), encoding="utf-8"))["questions"]:
+    for q in json.load(open(os.path.join(DATA, "mtbench_80.json"), encoding="utf-8"))["questions"]:
         qid, models = q["question_id"], sorted(q["answers"])
         for m in models:
             for t in range(2):
@@ -90,9 +90,11 @@ def rating_vs_comparison():
         for i, x in enumerate(models):
             for y in models[i + 1:]:
                 for a, b in ((x, y), (y, x)):
-                    calls.append(call("pair", f"q{qid}_{a}__{b}", f"{a}__{b}", f"q{qid}_{min(x, y)}__{max(x, y)}",
-                                      T.evaluate_ai_responses(q["question"], q["answers"][a], q["answers"][b], need_tie=True),
-                                      question_id=qid, slots={"A": a, "B": b}))
+                    for t in range(2):  # two rounds; the second is the baseline (round 1 carries no replicate number)
+                        calls.append(call("pair", f"q{qid}_{a}__{b}_{t}", f"{a}__{b}", f"q{qid}_{min(x, y)}__{max(x, y)}",
+                                          T.evaluate_ai_responses(q["question"], q["answers"][a], q["answers"][b], need_tie=True),
+                                          question_id=qid, slots={"A": a, "B": b}, round=t,
+                                          **({"replicate": 1} if t else {})))
     return calls
 
 

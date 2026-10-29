@@ -2,7 +2,7 @@
 tests; this file documents them and can rebuild them.
 
   python src/make_data.py truthfulqa <generation-validation.parquet>    -> data/truthfulqa_200.jsonl
-  python src/make_data.py mtbench <human-judgments.parquet>             -> data/mtbench_30.json
+  python src/make_data.py mtbench <human-judgments.parquet>             -> data/mtbench_80.json
   python src/make_data.py material dossiers --cap 0.3                   -> data/dossiers.jsonl
 
 truthfulqa_200  TruthfulQA (Lin et al., ACL 2022), generation config, validation split, Apache-2.0:
@@ -10,14 +10,13 @@ truthfulqa_200  TruthfulQA (Lin et al., ACL 2022), generation config, validation
                 sha256 dfb1004b8ab83b22e8e476c76d5ac6074ff35c43946a724e810de3d83c3e21a5. 200 questions drawn with
                 random.Random(0); every second one is paired with its best true answer, the others with one of its
                 false answers drawn by the same generator.
-mtbench_30      MT-Bench human judgments (Zheng et al., NeurIPS 2023), CC BY 4.0:
+mtbench_80      MT-Bench human judgments (Zheng et al., NeurIPS 2023), CC BY 4.0:
                 huggingface.co/datasets/lmsys/mt_bench_human_judgments, human split
                 (human-00000-of-00001-25f4910818759289.parquet), sha256
-                4877bc46a40929f4082c3c79593700fb897b1d6c7f4c473032694a01322f5769. First turn only. Questions ranked
-                by how much the human experts disagreed (answer pairs that got different winners from different
-                experts, plus the share of tie votes); the 30 most disputed questions that have answers from all of
-                gpt-4, claude-v1, gpt-3.5-turbo, vicuna-13b-v1.2 and alpaca-13b, with those answers and the experts'
-                votes among them.
+                4877bc46a40929f4082c3c79593700fb897b1d6c7f4c473032694a01322f5769. First turn only. All 80 questions, each with the
+                answers of gpt-4, claude-v1, gpt-3.5-turbo, vicuna-13b-v1.2 and alpaca-13b and the experts' votes
+                among them, ordered by how much the experts disagreed (answer pairs that got different winners from
+                different experts, plus the share of tie votes).
 celebrity_parents  Berglund et al., "The Reversal Curse" (ICLR 2024), MIT: huggingface.co/datasets/lberglund/reversal_curse,
                 celebrity_relations/parent_child_pairs.csv, copied unchanged, sha256
                 59d181610f1477a3cfb8a63428bb8cc037b7d73c9cdf5616fdd8d8ba90debb5d.
@@ -102,9 +101,7 @@ def mtbench(parquet):
                                      "answers": {m: answers[q][m][1] for m in models},
                                      "human_votes": [{"model_a": a, "model_b": b, "winner": w}
                                                      for a, b, w in votes[q] if a in models and b in models]})
-        if len(out["questions"]) == 30:
-            break
-    json.dump(out, open(os.path.join(DATA, "mtbench_30.json"), "w"), ensure_ascii=False, indent=0)
+    json.dump(out, open(os.path.join(DATA, "mtbench_80.json"), "w"), ensure_ascii=False, indent=0)
 
 
 def material(kind, cap):
