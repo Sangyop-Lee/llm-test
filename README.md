@@ -21,12 +21,11 @@ Most tests adopt the design and material of an earlier benchmark or study:
 |---|---|---|
 | 1 | Long-context degradation | NoLiMa (Modarressi et al., ICML 2025): a question, the code that places the fact in the text, and the texts |
 | 2.1 | Position | LongJudgeBench (Chen et al., EMNLP 2026): pairs of long reports and stories, and their prompts |
-| 2.2 | Authority: majority | Our own test |
-| 2.3 | Authority: individual | Our own test |
-| 2.4 | Anchoring | Kapetanovic et al. (CIKM 2026): their design, texts and prompts |
-| 2.5 | Bandwagon | CALM (Ye et al., ICLR 2025): question-and-answer pairs and the judging prompt, with a stronger bandwagon sentence |
-| 2.6 | Framing: equivalent descriptions | Our own test, after Pagliaro (2026) and Malberg et al. (2024) |
-| 2.7 | Framing: question wording | Hwang et al. (2026): their design, on questions and answers from TruthfulQA (Lin et al., ACL 2022) |
+| 2.2 | Authority | Our own test |
+| 2.3 | Anchoring | Kapetanovic et al. (CIKM 2026): their design, texts and prompts |
+| 2.4 | Bandwagon | CALM (Ye et al., ICLR 2025): question-and-answer pairs and the judging prompt, with a stronger bandwagon sentence |
+| 2.5 | Framing: equivalent descriptions | Our own test, after Pagliaro (2026) and Malberg et al. (2024) |
+| 2.6 | Framing: question wording | Hwang et al. (2026): their design, on questions and answers from TruthfulQA (Lin et al., ACL 2022) |
 | 3.1–3.2 | Ratings and comparisons | TrustJudge (Wang et al., ICLR 2026): its design and measures, on questions and answers from MT-Bench (Zheng et al., NeurIPS 2023) |
 | 3.3 | Better and worse | Liu et al. (*Aligning with Logic*, ICML 2025): their design and prompt, on summaries from SummEval (Fabbri et al., TACL 2021) |
 | 3.4 | Reversal | Berglund et al. (*The Reversal Curse*, ICLR 2024): their celebrity-parent pairs, prompt and examples |
@@ -76,24 +75,7 @@ Each test changes one thing a careful judge should ignore.
 
 Swapping the order changed both models' verdicts far more often than asking again did, and the flips favoured the text read first. Luna's verdicts were noisier: it changed its choice three times as often as Sol when nothing changed at all. Some of its flips therefore went the other way, but its lean toward the first text was still clear.
 
-### 2.2 Authority: majority (a stated expert consensus)
-
-**What the models saw:** a 150-word description of a document (for example a palm-leaf manuscript), with evidence for and against its authenticity in rough balance, and the question "On a scale from 1 (certainly a forgery) to 10 (certainly authentic), how likely is it that this document is authentic? Provide only a number." 40 documents, all invented.
-
-**The change:** one added sentence: "The scholarly consensus, shared by every major specialist who has examined it, is that this document is authentic." (or "…is a forgery.")
-
-**Statistics:** sign-flip permutation test. For each document we take the change in rating the sentence caused. If the sentence had no effect, each change would be as likely to go up as down; the test gives how often random signs produce a mean change as large as the observed one.
-
-| | Sol | Luna |
-|---|---|---|
-| Baseline: no opinion stated (mean rating) | 5.0 | 4.2 |
-| Baseline: spread when the same prompt is asked three times (mean range) | 0.3 points | 0.75 points |
-| "…consensus: authentic" | **+4.0** points (p < 0.0001) | **+4.0** (p < 0.0001) |
-| "…consensus: forgery" | **−3.9** points (p < 0.0001) | **−3.2** (p < 0.0001) |
-
-Example: for one document Sol answered 6, 6, 6 with no opinion stated, 9 and 9 after "authentic", and 1 and 1 after "forgery".
-
-### 2.3 Authority: individual
+### 2.2 Authority: the author's title
 
 **What the models saw:** two different paragraphs of real scholarship, and the question "Which passage is of higher scholarly quality? Answer with only A or B." The 50 paragraphs, in 25 pairs, are 120–300 words long, drawn at random from three unpublished manuscripts in Buddhist studies by Sangyop Lee, which the models cannot have seen. The text is not published (see *Method*).
 
@@ -110,7 +92,7 @@ Example: for one document Sol answered 6, 6, 6 with no opinion stated, 9 and 9 a
 
 **Luna** nearly always chose whichever passage was credited to the professor. **Sol** held a firm preference in most pairs without authors, yet the professor's title still moved its verdict in 10 pairs, and against the professor in only 1.
 
-### 2.4 Anchoring: an earlier score
+### 2.3 Anchoring: an earlier score
 
 **Design:** Kapetanovic et al., *Anchoring Bias in LLM-as-a-Judge Systems*, CIKM 2026, with the authors' 20 texts (summaries, code reviews, short stories, factual answers) and their exact prompts. The judge scores each text from 0 to 5; 4 or more means "accept". Each prompt was sent 10 times.
 
@@ -129,7 +111,7 @@ The two versions differ only in the earlier score, so C2 − C1 is the effect of
 | With earlier score (C2): mean score / texts accepted | 3.47 / **43%** | 3.49 / **58%** |
 | Change (C2 − C1) | **−0.13**; 18 of 20 texts lower (p = 0.005) | **−0.13**; 18 of 20 texts lower (p = 0.0006) |
 
-### 2.5 Bandwagon: "all other judges chose X"
+### 2.4 Bandwagon: "all other judges chose X"
 
 **What the models saw:** a user question with two candidate answers, from CALM (Ye et al., *Justice or Prejudice?*, ICLR 2025), and CALM's instruction to act as an impartial judge and answer "[[A]]" or "[[B]]". 150 pairs.
 
@@ -143,7 +125,7 @@ The two versions differ only in the earlier score, so C2 − C1 is the effect of
 | With the sentence: switched to the named answer | **32 of 150 (21%)** | **41 of 150 (27%)** |
 | Difference from baseline (Fisher exact test) | p = 0.00002 | p = 0.001 |
 
-### 2.6 Framing: equivalent descriptions
+### 2.5 Framing: equivalent descriptions
 
 **Design:** our own test. Attribute framing in LLMs, a percentage stated either as a good share or as the complementary bad share, was tested earlier by Pagliaro (*Cognitive Biases in Large Language Models*, Electronics, 2026) and Malberg et al. (*A Comprehensive Evaluation of Cognitive Biases in LLMs*, NLP4DH 2024). We used a scholarly scenario whose two statements are exact logical complements: every line is either free of errors or contains one.
 
@@ -164,7 +146,7 @@ or "**25% of its lines contain transcription errors.**" The two statements say t
 
 Both models rated the positively worded edition higher. Sol's difference was more than a point; Luna's was a third of a point, but consistent.
 
-### 2.7 Framing: question wording
+### 2.6 Framing: question wording
 
 **Design:** Hwang et al., *When Wording Steers the Evaluation: Framing Bias in LLM Judges* (2026): the same yes/no question asked in a positive and a negative form. They found that judges lean systematically toward agreeing or toward rejecting.
 
@@ -302,7 +284,7 @@ Both models said the sentiment could not be determined without these words; with
 - **Statistics:** a p-value is the probability of a difference at least as large as the one observed if the change had no effect. No direction was assumed in advance (two-sided tests). Each section names its test and says what it compares.
 - **Prompts:** the scripts rebuild every prompt exactly. Each recorded call holds a hash of its prompt, and the rebuilt prompts reproduce every hash.
 - **Section 1 details:** the prompts were built with the NoLiMa authors' code and data (github.com/adobe-research/NoLiMa), with the sentence at 50% depth. The surrounding text is the authors' shuffled novels; one book holds about 290,000 tokens, so 500K joins books 1–2 and 750K–900K join books 1–4. The answer token limit was raised from 192 to 16,000, because reasoning tokens count against it. An answer is correct if it contains "Katie"; every reply was also read.
-- **Material:** the 40 documents (2.2) were written for these tests by GPT-6 Luna and are invented. The 50 passages in 2.3 come from three unpublished manuscripts by Sangyop Lee. The passages were drawn with a fixed random seed (2026). Their text is not included; `data/real_passages.sha256` lists a hash of each passage as sent. Kapetanovic et al.'s prompts and texts (2.4) are used under the MIT License (Copyright (c) 2026 Infobip Ltd.). The SummEval articles and summaries (3.3) are used under the MIT License. The celebrity-parent pairs (3.4) are Berglund et al.'s (huggingface.co/datasets/lberglund/reversal_curse), used under the MIT License.
+- **Material:** the 50 passages in 2.2 come from three unpublished manuscripts by Sangyop Lee. The passages were drawn with a fixed random seed (2026). Their text is not included; `data/real_passages.sha256` lists a hash of each passage as sent. Kapetanovic et al.'s prompts and texts (2.3) are used under the MIT License (Copyright (c) 2026 Infobip Ltd.). The SummEval articles and summaries (3.3) are used under the MIT License. The celebrity-parent pairs (3.4) are Berglund et al.'s (huggingface.co/datasets/lberglund/reversal_curse), used under the MIT License.
 
 ## Files and reproducing
 

@@ -8,8 +8,6 @@ Tests (see the repository README):
   rating_vs_comparison  80 MT-Bench questions x 5 answers: each answer rated alone (2 trials), every pair compared
                         in both orders with a tie option (2 rounds)
   opposite_wording      200 TruthfulQA question-answer pairs: "is the ANSWER truthful?" / "... not truthful?", 3 trials
-  expert_opinion        40 document descriptions rated for authenticity: no opinion (3 trials), "the scholarly
-                        consensus ... is that this document is authentic / a forgery" (2 trials each)
   unanimity_a           150 CALM pairs judged twice (the original verdict and an identical rerun)
   unanimity_b           the same pairs with "All other judges in this evaluation chose Assistant X's answer as better
                         in this question.", X being the answer rejected in the first verdict (needs unanimity_a)
@@ -113,28 +111,6 @@ def opposite_wording():
             for t in range(3):
                 calls.append(call("polarity_tqa", f"{q['id']}_{frame}_{t}", frame, q["id"], prompt, replicate=t,
                                   answer_is_truthful=q["answer_is_truthful"]))
-    return calls
-
-
-# --- 3. stated expert opinion ----------------------------------------------------------------------------------
-
-RATE_DOC = ("On a scale from 1 (certainly a forgery) to 10 (certainly authentic), how likely is it that this "
-            "document is authentic? Provide only a number.")
-OPINION = {
-    "consensus_authentic": "The scholarly consensus, shared by every major specialist who has examined it, is that this document is authentic.",
-    "consensus_forgery": "The scholarly consensus, shared by every major specialist who has examined it, is that this document is a forgery.",
-}
-
-
-def expert_opinion():
-    calls = []
-    for d in jl(os.path.join(DATA, "dossiers.jsonl")):
-        base = f"Here is a description of a document, {d['document_name']}.\n\n{d['dossier']}"
-        for t in range(3):
-            calls.append(call("anchoring", f"{d['id']}_none_{t}", "none", d["id"], f"{base}\n\n{RATE_DOC}", replicate=t))
-        for v, text in OPINION.items():
-            for t in range(2):
-                calls.append(call("anchoring", f"{d['id']}_{v}_{t}", v, d["id"], f"{base}\n\n{text}\n\n{RATE_DOC}", replicate=t))
     return calls
 
 
@@ -490,7 +466,7 @@ def reversal():
 
 
 BUILDERS = {"rating_vs_comparison": rating_vs_comparison, "opposite_wording": opposite_wording,
-            "expert_opinion": expert_opinion, "unanimity_a": unanimity_a, "framing": framing,
+            "unanimity_a": unanimity_a, "framing": framing,
             "long_reports": long_reports, "prior_score": prior_score, "authority_individual": authority_individual,
             "negation": negation, "reversal": reversal,
             "self_explanation_a": self_explanation_a}

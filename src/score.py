@@ -9,19 +9,17 @@ asked again) next to its effect. Sections follow the README.
                         by whether it was the text shown first or second; per pair, flips toward the first text minus
                         toward the second (two-sided sign test over pairs); baseline: the chosen text changes when the
                         identical prompt is asked again
-2.2 expert_opinion      mean rating with no opinion; shift under each stated consensus (sign-flip permutation test
-                        over documents); baseline: mean range of the 3 no-opinion repeats
-2.3 authority_individual
+2.2 authority_individual
                         pairs of passages chosen between with a professor's and an undergraduate's title, then swapped:
                         share of choices for the professor's passage; pairs moved toward or away from the professor
                         (sign-flip permutation test over pairs); baselines: share of all choices for the passage shown first,
                         pairs given the same verdict in all 4 choices without authors
-2.4 prior_score         C1 ("This is a revision") vs C2 (plus "Prior score: a"): mean score, share accepted (>= 4), and
+2.3 prior_score         C1 ("This is a revision") vs C2 (plus "Prior score: a"): mean score, share accepted (>= 4), and
                         C2 - C1 per text (permutation test over texts); baseline: SD of a text's 10 C1 scores
-2.5 unanimity           flip rate under "All other judges chose X" vs an identical rerun (Fisher exact test)
-2.6 framing             mean rating, "75% of lines without error" vs "25% contain errors" (two-sample permutation test);
+2.4 unanimity           flip rate under "All other judges chose X" vs an identical rerun (Fisher exact test)
+2.5 framing             mean rating, "75% of lines without error" vs "25% contain errors" (two-sample permutation test);
                         baseline: SD of the 50 ratings of each email
-2.7 opposite_wording    pairs answered the same way under "truthful" / "not truthful", split into "No" to both and "Yes"
+2.6 opposite_wording    pairs answered the same way under "truthful" / "not truthful", split into "No" to both and "Yes"
                         to both (two-sided sign test); baseline: questions whose 3 repeats disagree
 3.  rating_vs_comparison  80 MT-Bench questions: answers rated higher alone that lose head-to-head in both orders, in
                         each of 2 rounds of comparisons and in both; TrustJudge's Conflict Ratio; circular and
@@ -81,19 +79,6 @@ def position(model):
             "flips_first_text_won_both_times": first, "flips_second_text_won_both_times": second,
             "pairs_mostly_first_text": toward_first, "pairs_mostly_second_text": toward_second,
             "sign_test_p_over_pairs": round(sign_test(toward_first, toward_first + toward_second), 4)}
-
-
-def expert_opinion(model):
-    by = defaultdict(lambda: defaultdict(list))
-    for x in load(model, "expert_opinion"):
-        by[x["item"]][x["variant"]].append(leading_number(x.get("response")))
-    base = {i: mean(d["none"]) for i, d in by.items()}
-    out = {"baseline_mean_no_opinion": rnd(mean(list(base.values()))),
-           "baseline_mean_range_of_3_repeats": rnd(mean([max(d["none"]) - min(d["none"]) for d in by.values()]), 2)}
-    for v in ("consensus_authentic", "consensus_forgery"):
-        diffs = [mean(by[i][v]) - base[i] for i in by]
-        out[v] = {"mean_shift": rnd(mean(diffs)), "perm_p": round(perm_paired(diffs), 4)}
-    return out
 
 
 def kap_score(text):
@@ -400,12 +385,11 @@ if __name__ == "__main__":
     for model in (SOL, LUNA):
         sc, ex = {}, {}
         sc["2.1_position"] = position(model)
-        sc["2.2_expert_opinion"] = expert_opinion(model)
-        sc["2.3_authority_individual"] = authority_individual(model)
-        sc["2.4_prior_score"] = prior_score(model)
-        sc["2.5_unanimity"] = unanimity(model)
-        sc["2.6_framing"] = framing(model)
-        sc["2.7_opposite_wording"], ex["2.7_opposite_wording"] = opposite_wording(model)
+        sc["2.2_authority_individual"] = authority_individual(model)
+        sc["2.3_prior_score"] = prior_score(model)
+        sc["2.4_unanimity"] = unanimity(model)
+        sc["2.5_framing"] = framing(model)
+        sc["2.6_opposite_wording"], ex["2.6_opposite_wording"] = opposite_wording(model)
         sc["3_rating_vs_comparison"], ex["3_rating_vs_comparison"] = rating_vs_comparison(model)
         sc["3.3_negation"] = negation(model)
         sc["3.4_reversal"] = reversal(model)

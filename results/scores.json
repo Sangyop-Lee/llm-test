@@ -16,19 +16,7 @@
    "pairs_mostly_second_text": 5,
    "sign_test_p_over_pairs": 0.0
   },
-  "2.2_expert_opinion": {
-   "baseline_mean_no_opinion": 4.992,
-   "baseline_mean_range_of_3_repeats": 0.3,
-   "consensus_authentic": {
-    "mean_shift": 3.971,
-    "perm_p": 0.0
-   },
-   "consensus_forgery": {
-    "mean_shift": -3.917,
-    "perm_p": 0.0
-   }
-  },
-  "2.3_authority_individual": {
+  "2.2_authority_individual": {
    "pairs": 25,
    "baseline_first_shown_chosen": [
     149,
@@ -43,7 +31,7 @@
    "pairs_away": 1,
    "perm_p": 0.0078
   },
-  "2.4_prior_score": {
+  "2.3_prior_score": {
    "C1": {
     "mean": 3.595,
     "accepted": 0.55
@@ -60,7 +48,7 @@
     "perm_p": 0.0047
    }
   },
-  "2.5_unanimity": {
+  "2.4_unanimity": {
    "baseline_plain_repeat": {
     "n": 150,
     "changed": 7,
@@ -73,7 +61,7 @@
    },
    "fisher_p": 2.1828004347580582e-05
   },
-  "2.6_framing": {
+  "2.5_framing": {
    "baseline_sd_of_50_repeats": {
     "without_error": 0.57,
     "contain_errors": 0.46
@@ -83,7 +71,7 @@
    "difference": 1.28,
    "perm_p": 0.0
   },
-  "2.7_opposite_wording": {
+  "2.6_opposite_wording": {
    "baseline_questions_whose_3_repeats_disagree": [
     15,
     400
@@ -216,19 +204,7 @@
    "pairs_mostly_second_text": 21,
    "sign_test_p_over_pairs": 0.0081
   },
-  "2.2_expert_opinion": {
-   "baseline_mean_no_opinion": 4.208,
-   "baseline_mean_range_of_3_repeats": 0.75,
-   "consensus_authentic": {
-    "mean_shift": 3.979,
-    "perm_p": 0.0
-   },
-   "consensus_forgery": {
-    "mean_shift": -3.208,
-    "perm_p": 0.0
-   }
-  },
-  "2.3_authority_individual": {
+  "2.2_authority_individual": {
    "pairs": 25,
    "baseline_first_shown_chosen": [
     135,
@@ -243,7 +219,7 @@
    "pairs_away": 0,
    "perm_p": 0.0
   },
-  "2.4_prior_score": {
+  "2.3_prior_score": {
    "C1": {
     "mean": 3.619,
     "accepted": 0.645
@@ -260,7 +236,7 @@
     "perm_p": 0.0006
    }
   },
-  "2.5_unanimity": {
+  "2.4_unanimity": {
    "baseline_plain_repeat": {
     "n": 150,
     "changed": 18,
@@ -273,7 +249,7 @@
    },
    "fisher_p": 0.001263235719225859
   },
-  "2.6_framing": {
+  "2.5_framing": {
    "baseline_sd_of_50_repeats": {
     "without_error": 0.46,
     "contain_errors": 0.71
@@ -283,7 +259,7 @@
    "difference": 0.34,
    "perm_p": 0.0093
   },
-  "2.7_opposite_wording": {
+  "2.6_opposite_wording": {
    "baseline_questions_whose_3_repeats_disagree": [
     39,
     400

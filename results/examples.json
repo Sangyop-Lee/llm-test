@@ -1,6 +1,6 @@
 {
  "gpt-6.1-sol": {
-  "2.7_opposite_wording": [
+  "2.6_opposite_wording": [
    {
     "item": "tqa041",
     "both_answered": "no",
@@ -186,7 +186,7 @@
   ]
  },
  "gpt-6-luna": {
-  "2.7_opposite_wording": [
+  "2.6_opposite_wording": [
    {
     "item": "tqa744",
     "both_answered": "no",
