@@ -26,10 +26,6 @@
     20,
     100
    ],
-   "professor_chosen": [
-    116,
-    200
-   ],
    "pairs_toward_professor": 10,
    "pairs_away": 1,
    "perm_p": 0.0078
@@ -216,10 +212,6 @@
    "choice_changes_when_titles_swapped": [
     82,
     100
-   ],
-   "professor_chosen": [
-    182,
-    200
    ],
    "pairs_toward_professor": 24,
    "pairs_away": 0,

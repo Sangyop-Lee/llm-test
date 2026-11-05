@@ -88,9 +88,8 @@ Swapping the order changed both models' verdicts far more often than asking agai
 | Baseline: with no authors, the choice changes when the identical prompt is asked again | 2% (1 of 50) | 26% (13 of 50) |
 | The choice changes when only the two titles are swapped | **20%** (20 of 100) | **82%** (82 of 100) |
 | Pairs where swapping the titles moved the verdict toward the professor / away | **10 / 1** (p = 0.008) | **24 / 0** (p < 0.0001) |
-| Professor's passage chosen | **58%** (116 of 200) | **91%** (182 of 200) |
 
-Asked the identical question again, Sol changed its choice 2% of the time; with only the titles swapped, it changed it 20% of the time, nearly always toward the professor. **Luna** nearly always chose whichever passage was credited to the professor.
+Asked the identical question again, Sol changed its choice 2% of the time; with only the titles swapped, it changed it 20% of the time, nearly always toward the professor. **Luna** changed its choice 82% of the time when only the titles were swapped, and every pair it moved went toward the professor.
 
 ### 2.3 Anchoring: an earlier score
 
