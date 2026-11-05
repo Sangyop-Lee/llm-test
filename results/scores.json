@@ -28,7 +28,11 @@
    ],
    "pairs_toward_professor": 10,
    "pairs_away": 1,
-   "perm_p": 0.0078
+   "perm_p": 0.0078,
+   "position_check_passage_shown_first_chosen": [
+    149,
+    300
+   ]
   },
   "2.3_prior_score": {
    "C1": {
@@ -215,7 +219,11 @@
    ],
    "pairs_toward_professor": 24,
    "pairs_away": 0,
-   "perm_p": 0.0
+   "perm_p": 0.0,
+   "position_check_passage_shown_first_chosen": [
+    135,
+    300
+   ]
   },
   "2.3_prior_score": {
    "C1": {
