@@ -18,15 +18,18 @@
   },
   "2.2_authority_individual": {
    "pairs": 25,
-   "baseline_first_shown_chosen": [
-    149,
-    300
+   "baseline_choice_changes_on_identical_repeat_without_authors": [
+    1,
+    50
+   ],
+   "choice_changes_when_titles_swapped": [
+    20,
+    100
    ],
    "professor_chosen": [
     116,
     200
    ],
-   "baseline_pairs_same_choice_every_time_without_authors": 20,
    "pairs_toward_professor": 10,
    "pairs_away": 1,
    "perm_p": 0.0078
@@ -206,15 +209,18 @@
   },
   "2.2_authority_individual": {
    "pairs": 25,
-   "baseline_first_shown_chosen": [
-    135,
-    300
+   "baseline_choice_changes_on_identical_repeat_without_authors": [
+    13,
+    50
+   ],
+   "choice_changes_when_titles_swapped": [
+    82,
+    100
    ],
    "professor_chosen": [
     182,
     200
    ],
-   "baseline_pairs_same_choice_every_time_without_authors": 11,
    "pairs_toward_professor": 24,
    "pairs_away": 0,
    "perm_p": 0.0

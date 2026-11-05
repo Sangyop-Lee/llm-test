@@ -11,9 +11,9 @@ asked again) next to its effect. Sections follow the README.
                         identical prompt is asked again
 2.2 authority_individual
                         pairs of passages chosen between with a professor's and an undergraduate's title, then swapped:
-                        share of choices for the professor's passage; pairs moved toward or away from the professor
-                        (sign-flip permutation test over pairs); baselines: share of all choices for the passage shown first,
-                        pairs given the same verdict in all 4 choices without authors
+                        the choice changes when only the titles are swapped; share of choices for the professor's
+                        passage; pairs moved toward or away from the professor (sign-flip permutation test over pairs);
+                        baseline: the choice changes when the identical no-author prompt is asked again
 2.3 prior_score         C1 ("This is a revision") vs C2 (plus "Prior score: a"): mean score, share accepted (>= 4), and
                         C2 - C1 per text (permutation test over texts); baseline: SD of a text's 10 C1 scores
 2.4 unanimity           flip rate under "All other judges chose X" vs an identical rerun (Fisher exact test)
@@ -164,23 +164,29 @@ def opposite_wording(model):
 
 
 def authority_individual(model):
-    per, first, prof_won, credited = defaultdict(lambda: defaultdict(list)), 0, 0, 0
-    recs = load(model, "authority_individual")
-    for x in recs:
+    """Baseline: with no authors, the choice changes when the identical prompt is asked again. Effect: the choice
+    changes when only the two titles are swapped (same order, same repeat), and it moves toward the professor."""
+    pick, per, prof_won, credited = {}, defaultdict(lambda: defaultdict(list)), 0, 0
+    for x in load(model, "authority_individual"):
         c = letter(x.get("response"), ("A", "B"))
         winner = x["slot_A"] if c == "A" else x["slot_B"] if c == "B" else None
-        first += c == "A"
+        pick[(x["item"], x["professor"], x["slot_A"], x["replicate"])] = winner
         X, _ = x["pair"]
-        if x["professor"] == "none":
-            per[tuple(x["pair"])]["none"].append(winner == X)
-        else:
+        if x["professor"] != "none":
             credited += 1
             prof_won += winner == x["professor"]
             per[tuple(x["pair"])]["X_professor" if x["professor"] == X else "Y_professor"].append(winner == X)
+    repeat = [(w, pick[(i, p, f, 1)]) for (i, p, f, t), w in pick.items() if p == "none" and t == 0]
+    swapped = []
+    for (x, y), _ in per.items():
+        for first in (x, y):
+            for t in (0, 1):
+                swapped.append((pick[(f"{x}_{y}", x, first, t)], pick[(f"{x}_{y}", y, first, t)]))
+    changed = lambda ps: [sum(a != b for a, b in ps if None not in (a, b)), sum(None not in (a, b) for a, b in ps)]
     # per pair: how often X won with the professor's title minus how often it won with the undergraduate's
     shift = [mean(d["X_professor"]) - mean(d["Y_professor"]) for d in per.values()]
-    return {"pairs": len(per), "baseline_first_shown_chosen": [first, len(recs)], "professor_chosen": [prof_won, credited],
-            "baseline_pairs_same_choice_every_time_without_authors": sum(min(d["none"]) == max(d["none"]) for d in per.values()),
+    return {"pairs": len(per), "baseline_choice_changes_on_identical_repeat_without_authors": changed(repeat),
+            "choice_changes_when_titles_swapped": changed(swapped), "professor_chosen": [prof_won, credited],
             "pairs_toward_professor": sum(v > 0 for v in shift), "pairs_away": sum(v < 0 for v in shift),
             "perm_p": round(perm_paired(shift), 4)}
 
