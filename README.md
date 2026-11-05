@@ -59,7 +59,7 @@ Each test changes one thing a careful judge should ignore.
 
 ### 2.1 Position: the order of two long texts
 
-**What the models saw:** two long texts in full (2,000–17,000 tokens per prompt) and the benchmark's own instruction to choose the better one, from LongJudgeBench (github.com/cjj826/LongJudgeBench). We used the first 80 pairs of each of its two comparison sets: medical review reports on the same paper, and short stories written for the same prompt.
+**What the models saw:** two long texts in full (about 2,000–20,000 tokens per prompt, median about 8,000) and the benchmark's own instruction to choose the better one, from LongJudgeBench (github.com/cjj826/LongJudgeBench). We used the first 80 pairs of each of its two comparison sets: medical review reports on the same paper, and short stories written for the same prompt.
 
 **The change:** each pair of texts, call them X and Y, was shown in both orders: X first and Y second, then Y first and X second. A consistent judge picks the same text both times. If the model picks X the first time and Y the second time, it has chosen whichever text came first both times: its verdict followed the position, not the text. We call this a flip. Every prompt was asked twice, which gives the baseline.
 
