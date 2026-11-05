@@ -1,0 +1,6 @@
+__pycache__/
+data/external/
+data/private
+data/haystack/*/
+results/raw/*_answers.jsonl
+results/*batch_state.json
