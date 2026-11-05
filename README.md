@@ -155,6 +155,8 @@ Both models rated the positively worded edition higher. Sol's difference was mor
 
 A consistent judge answers the two oppositely. 200 items, 3 repeats each.
 
+Differences from the paper: no system prompt (theirs: "You are a rigorous fact checker."), our answer line instead of their "Rationale: … / Answer: Yes or No", low reasoning effort, and 200 TruthfulQA items asked 3 times each instead of 1,000 asked once.
+
 **Statistics:** sign test. Among items answered the same way under both wordings, "No" to both and "Yes" to both would be equally likely if the wording did not matter.
 
 | | Sol | Luna |
